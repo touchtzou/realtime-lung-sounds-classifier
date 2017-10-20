@@ -1,0 +1,19 @@
+
+Important general notes:
+-----------------------
+ 
+1. There are some small spelling errors in 'enstitu_makalemiz.doc'. Further-
+   more, the type of fonts used in the tables, for example, will result in
+   errors if this file is copied or insterted into another file. This can be
+   solved by defining a new type of font that is only used with the text in tables
+   or figures.
+2. The Mahalanobis leave-one-out results were modified. This means that
+   the results in the table in the final printed Thesis Book are not valid.
+   (the new results were rewritten in the paper submitted to the Physiological
+   Measurement Journal).
+3. The Source Code was also modified to include the changes made to the Mahalanobis
+   Distance measure. However, these changes were made so that the maximum performace
+   results are obtained (which gave results higher than the ones inculded in the
+   paper submitted to the Phsiyol. Meas. Journal).
+4. Be aware if there are any changes made on the names or locations of the sound files
+   that are called by the different Power Point presentations (duzeltildi cogu).

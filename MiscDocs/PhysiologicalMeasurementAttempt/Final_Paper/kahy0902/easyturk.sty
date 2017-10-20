@@ -1,0 +1,186 @@
+%%%%%%%%%%%%%
+%%%  esayturk.sty
+% EasyTurkish
+% Adapted from German.sty/tex/doc by Mustafa Akgul   Feb 91
+%To get accented Turkish without having Turkish fonts
+% Use =U =O =C =S =G =I =A   and
+%     =u =o =c =s =g =i =a
+% Do not use this accent mechanism in Math modes
+% If you need = within text use $=$
+% To activate say \easyturkish before \begin{document}
+% for short turkish tex, you can use \turkishtext{ ..... }
+% If you need to write text in math mode use \hbox{...} or
+% \mbox{ ..} or \turkishtext{...}
+%
+% This is GERMAN.TEX or GERMAN.DOC or GERMAN.STY, Vers. 2.3c, 28 Aug 1990,
+%    collected by H.Partl (TU Wien),
+%    using ideas by W.Appelt, F.Hommes et al. (GMD St.Augustin),
+%    T.Hofmann (CIBA-GEIGY Basel), N.Schwarz (Uni Bochum),
+%
+
+% \ifundefined{mdqon} or \mdqon=\relax
+\expandafter\ifx\csname mdqon\endcsname\relax
+% \then go ahead \else do nothing
+\else \endinput \fi \message{Document Style Option `easyturkish'
+Version  0.1 of  Feb 1991}
+\def\turkishevery{
+\everymath{\mdqoff} \everydisplay{\mdqoff} \everyvbox{\mdqon}
+\everyhbox{\mdqon}}
+
+\def\easyturkish{\turkishevery \mdqon\turkishdate
+\captionsturkish}
+
+\def\turkishtext#1{\bgroup \turkishevery \mdqon #1 \egroup}
+\let\EQ==
+\let\dq\EQ
+% \ifundefined{protect}
+\ifx\protect\undefined
+% \then define it
+\let\protect=\relax \fi
+
+{\catcode`\@=11 % \makeatletter
+
+\gdef\allowhyphens{\penalty\@M \hskip\z@skip}
+%                 {\nobreak    \hskip 0pt plus 0pt\relax}
+
+
+
+
+% add the = to the definitions of dospecials and sanitize:
+\begingroup
+\def\do{\noexpand\do\noexpand}%
+% note that "\xdef" means "\global\edef"
+\xdef\dospecials{\dospecials\do\=}%
+% not ( \ifundefined{@sanitize} or \@sanitize=\relax ) = if LaTeX
+\expandafter\ifx\csname @sanitize\endcsname\relax \else
+  \def\@makeother{\noexpand\@makeother\noexpand}%
+  \xdef\@sanitize{\@sanitize\@makeother\=}%
+\fi
+\endgroup
+
+\gdef\mdqon{\catcode`\=\active} \gdef\mdqoff{\catcode`\=12 }
+
+
+%{\mdqoff
+%\gdef\dq{\EQ}
+%}
+
+{\mdqon \gdef={\protect\active@dq}
+\gdef\active@dq#1{%\futurelet\next@after@dq\first@active@dq}
+% For efficency, first the most frequent ones in a short macro only:
+%\gdef\first@active@dq#1{%
+%          \ifx \next@after@dq\bgroup\dq {#1}%
+%    \else \expandafter\ifx \space\next@after@dq\dq\space #1%
+     % The two lines above are needed before everything else, to take care of
+     % (empty or non-empty) groups and spaces after the active quote!
+     % Now the real thing:
+      \ifx #1s\c{s}\allowhyphens
+                              % note the empty group to avoid gobbling spaces.
+     \else \ifx #1c\c{c}\allowhyphens
+     \else \ifx #1g\v{g}\allowhyphens
+     \else \ifx #1s\c{s}\allowhyphens
+     \else \ifx #1o\"o\allowhyphens
+     \else \ifx #1u\"u\allowhyphens
+     \else \ifx #1i{\i}\allowhyphens
+     \else \ifx #1C\c C\allowhyphens
+     \else \ifx #1G\v G\allowhyphens
+     \else \ifx #1S\c S\allowhyphens
+     \else \ifx #1O\"O\allowhyphens
+     \else \ifx #1U\"U\allowhyphens
+     \else \ifx #1I\.I\allowhyphens
+     \else \other@active@dq{#1}%
+     \fi\fi\fi\fi\fi\fi\fi\fi \fi\fi\fi\fi\fi  }
+% And now a separate command for the less frequent ones:
+\gdef\other@active@dq#1{%
+           \ifx #1a\^a\allowhyphens
+     \else \ifx #1A\^A \allowhyphens
+                              % note the empty group to avoid gobbling spaces.
+     \else        \dq {} #1%
+     \fi\fi }
+} % end of \mdqon
+
+
+% Here is, how you can modify the LaTeX document style files and option
+% files, to benefit from the following \captionsxxxxx commands. Def's like
+%     \def\tableofcontents{\section*{Contents\markboth{CONTENTS}{CONTENTS}}
+%     \@starttoc{toc}}
+% should be redefined by def's like
+%     \def\contentsname{Contents} % <---
+%     \def\tableofcontents{\section*{\contentsname
+%     \markboth{\uppercase{\contentsname}}{\uppercase{\contentsname}}}
+%     \@starttoc{toc}}
+% (it's best to put all these new lines to the end of the origignal files),
+% and of course, you should modify the change date in the file header and
+% in the \typeout command.
+\gdef\turkishdate{
+\def\today{\number\day \space \ifcase\month\or
+ Ocak\or \c Subat\or Mart\or Nisan\or May{\i}s\or Haziran\or
+ Temmuz\or A\v gustos\or Eyl\"ul\or Ekim\or Kas{\i}m\or Aral{\i}k\fi
+ \space \number\year}}
+
+%% To be used with International Latex
+\gdef\captionsturkish{%
+\def\refname{Kaynak\c{c}a}%
+\def\abstractname{\"Oz}%
+\def\bibname{Kaynaklar}%
+\def\chaptername{B\"ol\"um}%
+\def\appendixname{Ek}%
+\def\contentsname{\.I\c{c}indekiler}% % oder nur: Inhalt
+\def\listfigurename{\c{S}ekiller Listesi}%
+\def\listtablename{Tablolar Listesi}%
+\def\indexname{\.Indeks}%
+\def\figurename{\c{S}ekil}%
+\def\tablename{Tablo}% % oder: Tafel
+\def\partname{K{\i}s{\i}m}%
+\def\enclname{Eki}% % oder: Beilage(n)
+\def\ccname{Karbon kopya}%   % oder: Kopien an
+\def\headtoname{}%
+\def\pagename{Sayfa}
+\def\Contentsname{\.I\c{C}\.INDEK\.ILER}
+\def\Refname{KAYNAK\c{C}A}
+\def\Listfigurename{\c{S}EK\.ILLER L\.ISTES\.I}
+\def\Listtablename{TABLOLAR L\.ISTES\.I}
+\def\Index{\.INDEKS}
+\def\Bibname{KAYNAKLAR}
+}
+
+\newcount\l@nguage
+% This will be re-declared as \language if the latter has not yet been
+% declared neither by Ferguson's ``Multilingual T^eX'' nor by TeX 3:
+% \ifundefined{language}
+\expandafter\ifx\csname language\endcsname\relax
+\global\let\language=\l@nguage \fi
+
+\newcount\USenglish  \global\USenglish=0
+\newcount\german     \global\german=1
+\newcount\austrian   \global\austrian=2
+\newcount\french     \global\french=3
+\newcount\english    \global\english=4
+
+\gdef\selectlanguage#1{\language #1\relax
+  \expandafter\ifcase #1\relax
+  \dateUSenglish  \captionsenglish   \or
+  \dategerman     \captionsgerman    \or
+  \dateaustrian   \captionsgerman    \or
+  \datefrench     \captionsfrench    \or
+  \dateenglish    \captionsenglish   \fi}
+
+% \ifundefined{setlanguage} (= TeX version < 3 )
+\expandafter\ifx\csname setlanguage\endcsname\relax
+\global\let\setlanguage=\selectlanguage \fi
+
+\gdef\originalTeX{\mdqoff \umlauthigh \let\3\original@three
+                  \selectlanguage{\USenglish}}
+\gdef\germanTeX{\mdqon \umlautlow \let\3\ss
+                \selectlanguage{\german}}
+
+} % return to previous catcodes
+
+% Now, switch on what is appropriate for german:
+
+%\germanTeX
+
+% This is the end of GERMAN.STY/DOC/TEX.
+\endinput
+
+%%%%%%%%% End of the file
